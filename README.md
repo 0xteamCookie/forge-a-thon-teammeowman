@@ -2,6 +2,16 @@
 
 A coding agent for VS Code whose agent loop runs on [TrueForge](https://github.com/truefoundry/trueforge). Built for the TrueForge Forge-a-thon (Techfest 2026-27, IIT Bombay).
 
+## Round 1 submission: teamMeowMan() · TM-19DE4C2ACA5
+
+| Artefact | Link |
+|---|---|
+| Demo video (Tasks A, B, C) | **VIDEO LINK** |
+| Write-up (PDF, 3 pages) | [docs/writeup.pdf](docs/writeup.pdf) |
+| Code | This repository |
+
+Team: Gagan Deep (leader), Shaunak Choudhury, Malika Farah.
+
 Anvil reads a real repository, decides what the model should see, plans a change across several files, and shows every hunk for review before anything touches disk. If the model behind it fails, it retries and then falls back to the next configured model on its own.
 
 ## Starting point
