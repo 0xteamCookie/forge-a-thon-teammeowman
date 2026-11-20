@@ -5,7 +5,7 @@ About 20 minutes the first time. Linux or macOS (on Windows, use WSL). Then foll
 ## You need
 - git, VS Code, Python 3.10+, OBS (or any screen recorder)
 - **Node 22.14 or newer** (`node -v`). If older: install nvm, then `nvm install 22 && nvm use 22`
-- **An Anthropic API key** (ask Shaunak). The demo costs well under $1 per take.
+- **Your own Anthropic API key** (from console.anthropic.com). The demo costs well under $1 per take.
 
 ## One-time setup
 
