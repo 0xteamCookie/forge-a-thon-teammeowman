@@ -23,12 +23,12 @@ const flag = name => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 const breakArg = flag('--break');
-const PROFILES = { anthropic: 'models.example.json', openai: 'models.openai.example.json' };
+const PROFILES = { anthropic: 'models.example.json', openai: 'models.openai.example.json', proxy: 'models.proxy.example.json' };
 
 function pickConfig() {
   const forced = flag('--profile') ?? process.env.ANVIL_PROFILE;
   if (forced) {
-    if (!PROFILES[forced]) throw new Error(`unknown profile "${forced}" (use anthropic or openai)`);
+    if (!PROFILES[forced]) throw new Error(`unknown profile "${forced}" (use anthropic, openai or proxy)`);
     return { file: PROFILES[forced], profile: forced };
   }
   if (existsSync(join(configDir, 'models.json'))) return { file: 'models.json', profile: 'custom' };
@@ -37,9 +37,10 @@ function pickConfig() {
     const last = readFileSync(stateFile, 'utf8').trim();
     if (PROFILES[last]) return { file: PROFILES[last], profile: last };
   }
+  if (process.env.ANVIL_PROXY_URL) return { file: PROFILES.proxy, profile: 'proxy' };
   if (process.env.ANTHROPIC_API_KEY) return { file: PROFILES.anthropic, profile: 'anthropic' };
   if (process.env.OPENAI_API_KEY) return { file: PROFILES.openai, profile: 'openai' };
-  throw new Error('No API key found. Export ANTHROPIC_API_KEY or OPENAI_API_KEY first.');
+  throw new Error('No key found. Export ANVIL_PROXY_URL + ANVIL_PROXY_TOKEN (team proxy), or ANTHROPIC_API_KEY, or OPENAI_API_KEY.');
 }
 
 let picked;
@@ -57,6 +58,7 @@ const slug = id => id.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$
 // Resolve $VARS in model ids and "auto" names.
 for (const p of cfg.providers) {
   p.id = p.type === 'custom' ? p.name : p.type;
+  if (p.base_url) p.base_url = p.base_url.replace(/\$([A-Z0-9_]+)/g, (_, v) => env(v).replace(/\/$/, ''));
   for (const m of p.models) {
     m.model_id = m.model_id.replace(/^\$([A-Z0-9_]+)$/, (_, v) => env(v));
     if (m.name === 'auto') m.name = slug(m.model_id);
@@ -76,8 +78,8 @@ async function checkModels(p, key) {
   if (p.type === 'openai' || base === 'https://api.openai.com/v1') {
     url = 'https://api.openai.com/v1/models';
     headers = { authorization: `Bearer ${key}` };
-  } else if (p.type === 'anthropic' || base === 'https://api.anthropic.com/v1') {
-    url = 'https://api.anthropic.com/v1/models?limit=100';
+  } else if (p.type === 'anthropic' || p.modelsStyle === 'anthropic' || base === 'https://api.anthropic.com/v1') {
+    url = `${base || 'https://api.anthropic.com/v1'}/models?limit=100`;
     headers = { 'x-api-key': key, 'anthropic-version': '2023-06-01' };
   } else return true; // other endpoints: nothing to check against
   const res = await fetch(url, { headers });

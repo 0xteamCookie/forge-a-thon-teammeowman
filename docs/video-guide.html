@@ -51,7 +51,7 @@ terminal command that proves it worked. Setup takes about 20 minutes once. Read 
 <ul>
   <li>Linux or macOS (Windows: use WSL). git, VS Code, Python 3.10 or newer, OBS Studio.</li>
   <li><b>Node 22.14 or newer:</b> run <code>node -v</code>. If it is lower, install nvm and run <code>nvm install 22</code> then <code>nvm use 22</code>.</li>
-  <li><b>Your own API key: Anthropic or OpenAI</b>, either works. About <b>$5 of credit</b> covers practice and retakes (one full take costs well under $1). Keep it off screen.</li>
+  <li><b>Model access</b>, one of: <b>(a) the team proxy URL and token from Shaunak</b> (no API key needed, recommended), or (b) your own Anthropic or OpenAI key (about $5 of credit is plenty). Keep it off screen either way.</li>
 </ul>
 <h3>1.2 Download everything (copy and paste, one block)</h3>
 <pre>mkdir forgeathon &amp;&amp; cd forgeathon
@@ -75,8 +75,12 @@ pytest must be exactly 8.4.2.</p>
   Wait until it prints <code>Agent server listening on http://localhost:8790</code>.</li>
   <li><b>Terminal 2:</b> set the key and reset everything (this terminal is never recorded):
   <pre>cd forgeathon
-export ANTHROPIC_API_KEY=sk-ant-...     # Anthropic key, OR:
-export OPENAI_API_KEY=sk-...            # OpenAI key (only one is needed)
+# (a) team proxy, from Shaunak:
+export ANVIL_PROXY_URL=https://....trycloudflare.com
+export ANVIL_PROXY_TOKEN=anvil-...
+# or (b) your own key, only one of:
+# export ANTHROPIC_API_KEY=sk-ant-...
+# export OPENAI_API_KEY=sk-...
 ./anvil/scripts/demo-reset.sh</pre>
   <span class="see">You should see</span> <code>git status: '' (empty = clean)</code> and two <code>ok</code> lines. With an OpenAI key, if it prints <code>FAIL ... model is not available</code>, it lists the models your key has: pick two with <code>export OPENAI_PRIMARY_MODEL=... OPENAI_FALLBACK_MODEL=...</code> (a strong one first, a cheap one second) and run it again. It also prints every
   instruction and command you will paste in the video. Keep that terminal visible on a second screen, or copy the lines into a note.</li>
@@ -180,7 +184,8 @@ Flask) before any retake.</div>
 <table class="t">
   <tr><th style="width:40%">What you see</th><th>Do this</th></tr>
   <tr><td>Panel: "TrueForge is not reachable"</td><td>Terminal 1 stopped, or Node is older than 22. Restart it, then Ctrl+Shift+P → "Anvil: Reconnect to TrueForge".</td></tr>
-  <tr><td>"No API key set"</td><td>Run one <code>export</code> line in Terminal 2, then <code>demo-reset.sh</code> again.</td></tr>
+  <tr><td>Proxy: "invalid team token" or the URL does not load</td><td>Check the two exports. If it still fails, the proxy may be down: message Shaunak.</td></tr>
+  <tr><td>"No key set"</td><td>Run one <code>export</code> line in Terminal 2, then <code>demo-reset.sh</code> again.</td></tr>
   <tr><td>Task A or B fails with "401" when it should not</td><td>The key is still broken from a previous Task C. Run <code>demo-reset.sh</code>.</td></tr>
   <tr><td>Ctrl+Alt+I does nothing</td><td>Some code must be selected first, and the cursor must be in the editor (click in the file).</td></tr>
   <tr><td><code>git status</code> shows files</td><td>Run <code>demo-reset.sh</code>.</td></tr>

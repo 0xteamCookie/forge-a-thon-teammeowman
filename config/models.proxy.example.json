@@ -1,0 +1,21 @@
+{
+  "$comment": "Team proxy profile: no real API key on this machine. Used automatically when ANVIL_PROXY_URL is set. The URL and ANVIL_PROXY_TOKEN come from whoever runs scripts/claude-proxy.mjs behind a tunnel. Same models as the Anthropic profile; the fallback goes through the proxy's OpenAI-compatible path as a separate provider, so breaking the primary for Task C leaves it working.",
+  "trueforgeUrl": "http://localhost:8790",
+  "providers": [
+    {
+      "type": "anthropic",
+      "base_url": "$ANVIL_PROXY_URL/v1",
+      "apiKeyEnv": "ANVIL_PROXY_TOKEN",
+      "models": [{ "name": "claude-sonnet-5-5", "model_id": "claude-sonnet-5-5", "context_length": 200000, "max_output_tokens": 16000 }]
+    },
+    {
+      "type": "custom",
+      "name": "anthropic-compat",
+      "base_url": "$ANVIL_PROXY_URL/v1",
+      "modelsStyle": "anthropic",
+      "apiKeyEnv": "ANVIL_PROXY_TOKEN",
+      "models": [{ "name": "claude-haiku-5-5", "model_id": "claude-haiku-5-5", "context_length": 200000, "max_output_tokens": 16000 }]
+    }
+  ],
+  "anvilModels": ["anthropic/claude-sonnet-5-5", "anthropic-compat/claude-haiku-5-5"]
+}

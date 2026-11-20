@@ -7,8 +7,8 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 FLASK="${FLASK_DIR:-$HERE/../flask-3.1.3}"
 
-if [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -z "${OPENAI_API_KEY:-}" ]; then
-  echo "No API key set. Run ONE of:  export ANTHROPIC_API_KEY=sk-ant-...   or   export OPENAI_API_KEY=sk-..." >&2
+if [ -z "${ANVIL_PROXY_TOKEN:-}" ] && [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -z "${OPENAI_API_KEY:-}" ]; then
+  echo "No key set. Export ANVIL_PROXY_URL + ANVIL_PROXY_TOKEN (team proxy), or ANTHROPIC_API_KEY, or OPENAI_API_KEY." >&2
   exit 1
 fi
 cd "$FLASK"
