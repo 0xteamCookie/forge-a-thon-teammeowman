@@ -85,8 +85,10 @@ export class TrueForgeService {
   }
 
   async availableModels(): Promise<string[]> {
-    const { data } = await this.client.models.list();
-    const list = (data as unknown as { data?: Array<{ name: string; provider?: { name?: string } }> }).data ?? [];
+    type Row = { name: string; provider?: { name?: string } };
+    // The SDK resolves to the response body ({ data: [...] }); accept a bare array too.
+    const body = (await this.client.models.list()) as unknown as { data?: Row[] | { data?: Row[] } } | Row[];
+    const list: Row[] = Array.isArray(body) ? body : Array.isArray(body.data) ? body.data : (body.data?.data ?? []);
     return list.map(m => (m.name.includes('/') ? m.name : `${m.provider?.name ?? ''}/${m.name}`));
   }
 
