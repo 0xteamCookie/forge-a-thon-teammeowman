@@ -136,7 +136,11 @@ export class InlineEditor {
           .showInformationMessage(`Anvil: applied ${result.accepted.length} of ${result.accepted.length + result.rejected.length} hunk(s) to ${rel}.`, 'Undo')
           .then(pick => (pick === 'Undo' && this.reviews.applied.includes(change) ? this.reviews.undo(change) : undefined));
       } else if (result.decided) {
-        void vscode.window.showInformationMessage('Anvil: all hunks rejected. File unchanged.');
+        void vscode.window.showInformationMessage(
+          result.rejected.length
+            ? 'Anvil: all hunks rejected. File unchanged.'
+            : 'Anvil: the model returned the selection unchanged, so there was nothing to review. If the file already contains this change, revert it (or run demo-reset.sh) and try again.',
+        );
       }
     } catch (e) {
       this.reviews.cancel(review, 'error');
