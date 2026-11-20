@@ -4,7 +4,13 @@
 
 ## 1. Team
 
-TODO: names, college or employer, GitHub handles.
+Team **teamMeowMan()**
+
+| Member | Role | College / employer | GitHub |
+|---|---|---|---|
+| Gagan Deep | Leader | TODO | TODO |
+| Malika Farah | Member | TODO | TODO |
+| Shaunak Choudhury | Member | TODO | [shaunakc11](https://github.com/shaunakc11) |
 
 ## 2. Starting point
 
@@ -60,7 +66,7 @@ Switching models: `anvil.models` (ordered list of TrueForge model names) or **An
 
 ## 7. Tools used
 
-TODO: list AI coding assistants and other tools used to build Anvil (no points either way; must be declared).
+Claude Code.
 
 ## 8. Known limitations
 
