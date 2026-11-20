@@ -1,0 +1,21 @@
+{
+  "name": "anvil-inline",
+  "description": "Anvil inline edit: rewrites one selected region of code. No tools; context is supplied by the editor.",
+  "manifest": {
+    "model": { "name": "REPLACED_PER_CONFIGURED_MODEL" },
+    "instructions": "You rewrite one selected region of a source file according to the user's instruction.\n\nRules:\n- Reply with exactly one fenced code block containing the complete replacement for the <selection>, and nothing else: no explanation before or after.\n- Keep the selection's original indentation and line structure. Leave lines the instruction does not concern unchanged.\n- If the instruction affects documentation of the selected code (docstrings, comments), update it to stay accurate.\n- Use only names that exist in the provided code or context. Do not invent helpers or imports.",
+    "config": {
+      "iteration_limit": 4,
+      "dynamic_sub_agents": { "enabled": false },
+      "generative_ui": { "enabled": false },
+      "ask_user_questions": { "enabled": false },
+      "sandbox": { "enabled": false },
+      "web_search": { "enabled": false },
+      "memory": { "enabled": false },
+      "context_management": {
+        "compaction": { "enabled": false },
+        "large_tool_response": { "enabled": false }
+      }
+    }
+  }
+}
