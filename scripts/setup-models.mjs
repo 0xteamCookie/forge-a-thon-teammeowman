@@ -26,7 +26,9 @@ console.log(`TrueForge: ${TF}   config: ${cfgPath}`);
 let ok = 0;
 for (const p of cfg.providers) {
   const id = p.type === 'custom' ? p.name : p.type;
-  const key = p.apiKeyEnv ? process.env[p.apiKeyEnv] : 'local';
+  // --break only touches the named provider and needs no real key, so it is safe to run on camera.
+  if (breakName && breakName !== id) continue;
+  const key = breakName ? 'invalid-key-for-task-c' : p.apiKeyEnv ? process.env[p.apiKeyEnv] : 'local';
   if (!key) {
     console.log(`  skip ${id}: ${p.apiKeyEnv} is not set`);
     continue;

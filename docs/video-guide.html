@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Anvil demo video: setup and recording guide</title>
+<style>
+  @page { size: A4; margin: 13mm 16mm 12mm 16mm; }
+  body { font-family: 'Liberation Sans', Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.36; color: #111; margin: 0; }
+  table.head { width: 100%; border-collapse: collapse; font-size: 9.8pt; margin-bottom: 10px; }
+  table.head td { border: 1px solid #999; padding: 4px 7px; }
+  table.head td.k { background: #eee; font-weight: bold; width: 15%; }
+  h1 { font-size: 14pt; margin: 2px 0 4px 0; }
+  h2 { font-size: 11pt; margin: 12px 0 4px 0; border-bottom: 1px solid #bbb; padding-bottom: 1px; break-after: avoid; }
+  h3 { font-size: 10pt; margin: 8px 0 2px 0; break-after: avoid; }
+  p { margin: 0 0 5px 0; }
+  ol, ul { margin: 2px 0 6px 0; padding-left: 20px; }
+  li { margin-bottom: 3px; }
+  code { font-family: 'DejaVu Sans Mono', monospace; font-size: 8.6pt; background: #f2f2f2; padding: 0 2px; }
+  pre { font-family: 'DejaVu Sans Mono', monospace; font-size: 8.4pt; background: #f4f4f4; border: 1px solid #ddd;
+        padding: 5px 7px; margin: 3px 0 6px 0; white-space: pre-wrap; break-inside: avoid; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 9.2pt; margin: 4px 0 7px 0; }
+  table.t th { text-align: left; background: #eee; border: 1px solid #bbb; padding: 2px 6px; }
+  table.t td { border: 1px solid #ccc; padding: 3px 6px; vertical-align: top; }
+  .box { border: 1px solid #b3261e; background: #fbe9e7; padding: 6px 9px; margin: 6px 0 8px 0; break-inside: avoid; }
+  .ok { border: 1px solid #2e7d32; background: #e8f3e8; padding: 6px 9px; margin: 6px 0 8px 0; break-inside: avoid; }
+  .see { color: #1b5e20; }
+  .task { break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<table class="head">
+  <tr><td class="k">For</td><td>Gagan Deep, Malika Farah</td><td class="k">Deadline</td><td><b>Today, 20 Nov.</b> Video to Shaunak by 7 PM</td></tr>
+  <tr><td class="k">Repo</td><td colspan="3">github.com/0xteamCookie/forge-a-thon-teammeowman</td></tr>
+</table>
+
+<h1>Anvil demo video: setup and recording, step by step</h1>
+<p>You will record one screen video, at most <b>4 minutes</b>, showing Tasks A, B and C in that order, each followed by a
+terminal command that proves it worked. Setup takes about 20 minutes once. Read the rules box before you record.</p>
+
+<div class="box"><b>Rules from the problem statement (breaking one costs marks):</b>
+<ul style="margin-bottom:0">
+  <li>Order is A, then B, then C. Each must be followed by its check on screen. Max 4:00.</li>
+  <li>You may cut time spent waiting for the model. <b>Never cut between giving an instruction and the diff appearing.</b></li>
+  <li>During Task B, briefly show the TrueForge session (the "Session" button).</li>
+  <li>The API key must never appear on screen.</li>
+</ul></div>
+
+<h2>Part 1. One-time setup (about 20 minutes)</h2>
+<h3>1.1 Check you have these</h3>
+<ul>
+  <li>Linux or macOS (Windows: use WSL). git, VS Code, Python 3.10 or newer, OBS Studio.</li>
+  <li><b>Node 22.14 or newer:</b> run <code>node -v</code>. If it is lower, install nvm and run <code>nvm install 22</code> then <code>nvm use 22</code>.</li>
+  <li><b>The API key</b> from Shaunak (starts with <code>sk-ant-</code>). Keep it out of chats that get screenshotted.</li>
+</ul>
+<h3>1.2 Download everything (copy and paste, one block)</h3>
+<pre>mkdir forgeathon &amp;&amp; cd forgeathon
+git clone https://github.com/0xteamCookie/forge-a-thon-teammeowman anvil
+git clone --branch 3.1.3 https://github.com/pallets/flask flask-3.1.3
+cd flask-3.1.3
+python3 -m venv .venv
+.venv/bin/pip install -e . "pytest==8.4.2" asgiref python-dotenv
+cd ../anvil/extension
+npm install
+npm run build
+cd ../..</pre>
+<p>The two folders <code>anvil</code> and <code>flask-3.1.3</code> must sit next to each other inside <code>forgeathon</code>.
+pytest must be exactly 8.4.2.</p>
+
+<h2>Part 2. Before every recording session</h2>
+<ol>
+  <li><b>Terminal 1:</b> start TrueForge and leave it open the whole time:
+  <pre>cd forgeathon
+./anvil/scripts/start-trueforge.sh</pre>
+  Wait until it prints <code>Agent server listening on http://localhost:8790</code>.</li>
+  <li><b>Terminal 2:</b> set the key and reset everything (this terminal is never recorded):
+  <pre>cd forgeathon
+export ANTHROPIC_API_KEY=sk-ant-...
+./anvil/scripts/demo-reset.sh</pre>
+  <span class="see">You should see</span> <code>git status: '' (empty = clean)</code> and two <code>ok</code> lines. It also prints every
+  instruction and command you will paste in the video. Keep that terminal visible on a second screen, or copy the lines into a note.</li>
+  <li>In Terminal 2: <code>code anvil</code>. In that VS Code window press <b>F5</b>. A <b>second window</b> opens with the Flask project:
+  <b>record only this second window</b>.</li>
+  <li>In the second window, check the bottom-right status bar reads
+  <code>Anvil · anthropic/claude-sonnet-5-5 (+1 fallback)</code>. Click the <b>anvil icon</b> in the left activity bar: the Anvil panel should
+  show <code>Connected to TrueForge</code>.</li>
+  <li>Open a terminal inside that window: menu <b>Terminal → New Terminal</b>. It opens in the Flask folder. Drag the panel up so the terminal
+  is about a third of the screen. Close all open editor tabs.</li>
+  <li><b>Practice once without recording</b> (Part 4), then run <code>./anvil/scripts/demo-reset.sh</code> in Terminal 2 again and close
+  any open tabs before the real take.</li>
+</ol>
+
+<h2>Part 3. OBS settings (once)</h2>
+<ol>
+  <li>Settings → Video: Base and Output resolution <b>1920x1080</b>, 30 FPS. Settings → Output: Recording format <b>mp4</b>.</li>
+  <li>Sources → + → <b>Screen Capture</b> (Linux: "Screen Capture (XSHM)" or "PipeWire"; Mac: "macOS Screen Capture"). Pick the screen
+  where the second VS Code window is, maximised.</li>
+  <li>Mute Desktop Audio and Mic unless you want to narrate (narration is optional).</li>
+  <li>Turn on Do Not Disturb and close chat apps so no notification shows up in the video.</li>
+</ol>
+
+<h2>Part 4. Recording, step by step</h2>
+<p>Press <b>Start Recording</b> in OBS, then follow exactly. Times are a target; the hard limit is 4:00 total.</p>
+
+<div class="task">
+<h3>Task A: inline edit (about 1:00)</h3>
+<ol>
+  <li><b>Show cancel first.</b> In the Explorer open <code>src/flask/helpers.py</code>. Find <code>def get_debug_flag</code> (Ctrl+F). Select the
+  whole function, from <code>def</code> down to its <code>return</code> line.</li>
+  <li>Press <b>Ctrl+Alt+I</b> (Mac: Cmd+Alt+I). A box opens at the top. Type <code>add a detailed comment above every line</code> and press Enter (a long answer, so there is time to stop it).</li>
+  <li>As soon as the diff tab opens and starts filling, press <b>Esc</b> (or click the status-bar item "Anvil: generating..."). The diff
+  closes. <span class="see">You see "inline edit stopped. No changes were made."</span></li>
+  <li>Select the same function again, press <b>Ctrl+Alt+I</b>, paste the exact Task A instruction from Terminal 2, press Enter.
+  <b>Do not cut here.</b></li>
+  <li>A diff tab opens. Left = the file now, right = the proposal, filling as the model writes. Above each change there is
+  <code>Accept hunk 1</code> and <code>Reject</code>. Click <b>Accept</b> above the docstring change, then <b>Accept</b> above the
+  code change (one at a time, not "Accept all").</li>
+  <li><span class="see">Notification: "Anvil: applied 2 of 2 hunk(s) to src/flask/helpers.py." with an Undo button.</span></li>
+  <li>In the VS Code terminal paste the Task A check. <span class="see">It must print <code>False</code>.</span></li>
+  <li><b>Show undo:</b> click <b>Undo</b> on the notification (or Ctrl+Shift+P → <code>Anvil: Undo Last Applied Change</code>).
+  <span class="see">The function goes back to the original.</span> That is all; move on to Task B.</li>
+</ol></div>
+
+<div class="task">
+<h3>Task B: agent mode (about 2:00)</h3>
+<ol>
+  <li>Click the <b>anvil icon</b> to open the Anvil panel. Click <b>New</b> at its top. Paste the exact Task B instruction into the
+  box at the bottom and press Enter. Do not name any files.</li>
+  <li><span class="see">A "CONTEXT" card appears listing <code>src/flask/cli.py</code>, <code>tests/test_cli.py</code>,
+  <code>docs/cli.rst</code>... with reasons and a token bar.</span> Hover over it for 2 to 3 seconds so it is readable.</li>
+  <li>Tool rows appear (<code>retrieve_context</code>, <code>read_file</code>...). You may cut this waiting time.</li>
+  <li>A diff tab opens for <code>src/flask/cli.py</code>. Click <b>Accept</b> on each hunk (or "Accept all" at the top). The next file
+  opens: <code>tests/test_cli.py</code>, then <code>docs/cli.rst</code>, then <code>CHANGES.rst</code>. Accept each one.</li>
+  <li>If a "Run command" card appears in the panel (e.g. pytest), click <b>Allow</b>.</li>
+  <li><span class="see">The panel ends with "Done in ...s".</span> Click <b>Session</b> at the top of the panel: the browser opens the
+  TrueForge session. Click the <b>"Agent steps · N tool calls"</b> row to expand it so the tool calls are visible, scroll for
+  3 to 5 seconds, then go back to VS Code.</li>
+  <li>In the VS Code terminal paste the Task B checks one by one:
+  <span class="see">pytest says <code>60 passed</code> or similar; <code>flask --help</code> lists <code>config</code>;
+  the config command shows <code>"SECRET_KEY": "***"</code>; <code>git diff --stat</code> shows 3 or 4 files.</span></li>
+</ol></div>
+
+<div class="task">
+<h3>Task C: resilience (about 0:45)</h3>
+<ol>
+  <li>In the VS Code terminal paste the two Task C lines (they reset Flask and make the main model's key invalid; no real key is
+  involved). <span class="see">It prints "BROKE anthropic".</span> Then run <code>git status</code>: empty.</li>
+  <li>Repeat Task A: open <code>helpers.py</code>, select <code>get_debug_flag</code>, Ctrl+Alt+I, paste the Task A instruction, Enter.</li>
+  <li>While it works, click around (scroll the file, open the Explorer) to show the editor is not frozen.
+  <span class="see">Notifications appear: "...claude-sonnet-5-5 failed (...401...). Retrying in 1s", then
+  "...Falling back to anthropic-compat/claude-haiku-5-5 automatically."</span> The diff then appears from the second model.</li>
+  <li>Click <b>Reject all</b> at the top of the diff. In the terminal run <code>git status</code>. <span class="see">Empty output = workspace
+  unchanged.</span></li>
+  <li>Stop recording in OBS.</li>
+</ol></div>
+
+<div class="ok"><b>After the take:</b> in Terminal 2 run <code>./anvil/scripts/demo-reset.sh</code> (this restores the real key and resets
+Flask) before any retake.</div>
+
+<h2>Part 5. Trim, upload and send</h2>
+<ol>
+  <li>If it is over 4:00, trim only waiting time (Task B tool calls, the model thinking). Any simple editor works: Shotcut, Kdenlive,
+  iMovie, or YouTube Studio's Editor after uploading. Never cut between pressing Enter on an instruction and the diff appearing.</li>
+  <li>Upload to YouTube as <b>Unlisted</b> (not Private). Or Google Drive with sharing set to "Anyone with the link".</li>
+  <li>Open the link in a private/incognito window to check it plays without logging in.</li>
+  <li><b>Send Shaunak:</b> the link, plus the time in the final video where each of these starts:
+  <table class="t">
+    <tr><th>Moment</th><th>Time</th></tr>
+    <tr><td>Task A starts (the Esc cancel)</td><td>m:ss</td></tr>
+    <tr><td>Task A diff with Accept buttons</td><td>m:ss</td></tr>
+    <tr><td>Undo</td><td>m:ss</td></tr>
+    <tr><td>Task B starts / Context card visible</td><td>m:ss / m:ss</td></tr>
+    <tr><td>TrueForge session shown</td><td>m:ss</td></tr>
+    <tr><td>Task C starts / fallback notification</td><td>m:ss / m:ss</td></tr>
+  </table></li>
+</ol>
+
+<h2>Part 6. If something goes wrong</h2>
+<table class="t">
+  <tr><th style="width:40%">What you see</th><th>Do this</th></tr>
+  <tr><td>Panel: "TrueForge is not reachable"</td><td>Terminal 1 stopped, or Node is older than 22. Restart it, then Ctrl+Shift+P → "Anvil: Reconnect to TrueForge".</td></tr>
+  <tr><td>"ANTHROPIC_API_KEY is not set"</td><td>Run the <code>export</code> line in Terminal 2, then <code>demo-reset.sh</code> again.</td></tr>
+  <tr><td>Task A or B fails with "401" when it should not</td><td>The key is still broken from a previous Task C. Run <code>demo-reset.sh</code>.</td></tr>
+  <tr><td>Ctrl+Alt+I does nothing</td><td>Some code must be selected first, and the cursor must be in the editor (click in the file).</td></tr>
+  <tr><td><code>git status</code> shows files</td><td>Run <code>demo-reset.sh</code>.</td></tr>
+  <tr><td>pytest "ImportError ... notset"</td><td><code>.venv/bin/pip install "pytest==8.4.2"</code> in the Flask folder.</td></tr>
+  <tr><td>Task B takes a different path or edits other files</td><td>That is fine as long as the checks pass. If a check fails, reset and retake.</td></tr>
+  <tr><td>Anything else</td><td>Screenshot it and send it to Shaunak.</td></tr>
+</table>
+
+</body>
+</html>
