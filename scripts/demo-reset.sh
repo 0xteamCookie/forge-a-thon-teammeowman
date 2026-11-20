@@ -7,8 +7,8 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 FLASK="${FLASK_DIR:-$HERE/../flask-3.1.3}"
 
-if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
-  echo "ANTHROPIC_API_KEY is not set. Run: export ANTHROPIC_API_KEY=sk-ant-..." >&2
+if [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -z "${OPENAI_API_KEY:-}" ]; then
+  echo "No API key set. Run ONE of:  export ANTHROPIC_API_KEY=sk-ant-...   or   export OPENAI_API_KEY=sk-..." >&2
   exit 1
 fi
 cd "$FLASK"
@@ -19,7 +19,10 @@ git clean -fdq -e .venv -e .vscode
 rm -rf examples/tutorial/instance
 echo "Flask reset at $(git rev-parse --short HEAD). git status: '$(git status --short)' (empty = clean)"
 
-node "$HERE/scripts/setup-models.mjs" --workspace "$FLASK" | grep -E "ok|FAIL|BROKE|skip"
+if ! node "$HERE/scripts/setup-models.mjs" --workspace "$FLASK"; then
+  echo "Model setup failed (see FAIL lines above). Fix that before recording." >&2
+  exit 1
+fi
 # Readable on video: larger fonts, no minimap.
 node -e '
 const fs=require("fs"),p=process.argv[1];const s=JSON.parse(fs.readFileSync(p,"utf8"));
@@ -45,7 +48,7 @@ Task B checks:
 git diff --stat
 
 Task C (break the primary model, then repeat Task A):
-git checkout -- . && node ../anvil/scripts/setup-models.mjs --break anthropic
+git checkout -- . && node ../anvil/scripts/setup-models.mjs --break primary
 git status
 ---------------------------------------------------------------------------
 EOF

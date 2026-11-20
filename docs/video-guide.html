@@ -51,7 +51,7 @@ terminal command that proves it worked. Setup takes about 20 minutes once. Read 
 <ul>
   <li>Linux or macOS (Windows: use WSL). git, VS Code, Python 3.10 or newer, OBS Studio.</li>
   <li><b>Node 22.14 or newer:</b> run <code>node -v</code>. If it is lower, install nvm and run <code>nvm install 22</code> then <code>nvm use 22</code>.</li>
-  <li><b>Your own Anthropic API key</b> (starts with <code>sk-ant-</code>, from console.anthropic.com). Each take costs well under $1. Keep it off screen.</li>
+  <li><b>Your own API key: Anthropic or OpenAI</b>, either works. About <b>$5 of credit</b> covers practice and retakes (one full take costs well under $1). Keep it off screen.</li>
 </ul>
 <h3>1.2 Download everything (copy and paste, one block)</h3>
 <pre>mkdir forgeathon &amp;&amp; cd forgeathon
@@ -75,14 +75,15 @@ pytest must be exactly 8.4.2.</p>
   Wait until it prints <code>Agent server listening on http://localhost:8790</code>.</li>
   <li><b>Terminal 2:</b> set the key and reset everything (this terminal is never recorded):
   <pre>cd forgeathon
-export ANTHROPIC_API_KEY=sk-ant-...
+export ANTHROPIC_API_KEY=sk-ant-...     # Anthropic key, OR:
+export OPENAI_API_KEY=sk-...            # OpenAI key (only one is needed)
 ./anvil/scripts/demo-reset.sh</pre>
-  <span class="see">You should see</span> <code>git status: '' (empty = clean)</code> and two <code>ok</code> lines. It also prints every
+  <span class="see">You should see</span> <code>git status: '' (empty = clean)</code> and two <code>ok</code> lines. With an OpenAI key, if it prints <code>FAIL ... model is not available</code>, it lists the models your key has: pick two with <code>export OPENAI_PRIMARY_MODEL=... OPENAI_FALLBACK_MODEL=...</code> (a strong one first, a cheap one second) and run it again. It also prints every
   instruction and command you will paste in the video. Keep that terminal visible on a second screen, or copy the lines into a note.</li>
   <li>In Terminal 2: <code>code anvil</code>. In that VS Code window press <b>F5</b>. A <b>second window</b> opens with the Flask project:
   <b>record only this second window</b>.</li>
   <li>In the second window, check the bottom-right status bar reads
-  <code>Anvil · anthropic/claude-sonnet-5-5 (+1 fallback)</code>. Click the <b>anvil icon</b> in the left activity bar: the Anvil panel should
+  <code>Anvil · &lt;your primary model&gt; (+1 fallback)</code>. Click the <b>anvil icon</b> in the left activity bar: the Anvil panel should
   show <code>Connected to TrueForge</code>.</li>
   <li>Open a terminal inside that window: menu <b>Terminal → New Terminal</b>. It opens in the Flask folder. Drag the panel up so the terminal
   is about a third of the screen. Close all open editor tabs.</li>
@@ -144,11 +145,11 @@ export ANTHROPIC_API_KEY=sk-ant-...
 <h3>Task C: resilience (about 0:45)</h3>
 <ol>
   <li>In the VS Code terminal paste the two Task C lines (they reset Flask and make the main model's key invalid; no real key is
-  involved). <span class="see">It prints "BROKE anthropic".</span> Then run <code>git status</code>: empty.</li>
+  involved). <span class="see">It prints "BROKE" and the primary model name.</span> Then run <code>git status</code>: empty.</li>
   <li>Repeat Task A: open <code>helpers.py</code>, select <code>get_debug_flag</code>, Ctrl+Alt+I, paste the Task A instruction, Enter.</li>
   <li>While it works, click around (scroll the file, open the Explorer) to show the editor is not frozen.
-  <span class="see">Notifications appear: "...claude-sonnet-5-5 failed (...401...). Retrying in 1s", then
-  "...Falling back to anthropic-compat/claude-haiku-5-5 automatically."</span> The diff then appears from the second model.</li>
+  <span class="see">Notifications appear: "...&lt;primary model&gt; failed (...401...). Retrying in 1s", then
+  "...Falling back to &lt;fallback model&gt; automatically."</span> The diff then appears from the second model.</li>
   <li>Click <b>Reject all</b> at the top of the diff. In the terminal run <code>git status</code>. <span class="see">Empty output = workspace
   unchanged.</span></li>
   <li>Stop recording in OBS.</li>
@@ -179,7 +180,7 @@ Flask) before any retake.</div>
 <table class="t">
   <tr><th style="width:40%">What you see</th><th>Do this</th></tr>
   <tr><td>Panel: "TrueForge is not reachable"</td><td>Terminal 1 stopped, or Node is older than 22. Restart it, then Ctrl+Shift+P → "Anvil: Reconnect to TrueForge".</td></tr>
-  <tr><td>"ANTHROPIC_API_KEY is not set"</td><td>Run the <code>export</code> line in Terminal 2, then <code>demo-reset.sh</code> again.</td></tr>
+  <tr><td>"No API key set"</td><td>Run one <code>export</code> line in Terminal 2, then <code>demo-reset.sh</code> again.</td></tr>
   <tr><td>Task A or B fails with "401" when it should not</td><td>The key is still broken from a previous Task C. Run <code>demo-reset.sh</code>.</td></tr>
   <tr><td>Ctrl+Alt+I does nothing</td><td>Some code must be selected first, and the cursor must be in the editor (click in the file).</td></tr>
   <tr><td><code>git status</code> shows files</td><td>Run <code>demo-reset.sh</code>.</td></tr>

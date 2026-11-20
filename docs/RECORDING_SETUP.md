@@ -5,7 +5,7 @@ About 20 minutes the first time. Linux or macOS (on Windows, use WSL). Then foll
 ## You need
 - git, VS Code, Python 3.10+, OBS (or any screen recorder)
 - **Node 22.14 or newer** (`node -v`). If older: install nvm, then `nvm install 22 && nvm use 22`
-- **Your own Anthropic API key** (from console.anthropic.com). The demo costs well under $1 per take.
+- **Your own API key, Anthropic or OpenAI** (about $5 of credit is plenty; one take costs well under $1).
 
 ## One-time setup
 
@@ -36,7 +36,7 @@ Wait for `Agent server listening on http://localhost:8790`.
 
 **Terminal 2**:
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...      # never commit or show this on screen
+export ANTHROPIC_API_KEY=sk-ant-...      # or: export OPENAI_API_KEY=sk-...  (never show it on screen)
 ./anvil/scripts/demo-reset.sh
 ```
 It resets Flask, registers the two models in TrueForge, sets large fonts, and prints every line you paste during the video. **Run it again before every take.**

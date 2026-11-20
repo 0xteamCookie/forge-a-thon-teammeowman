@@ -1,0 +1,20 @@
+{
+  "$comment": "OpenAI profile. Used automatically when OPENAI_API_KEY is set and ANTHROPIC_API_KEY is not (or with --profile openai). Model ids come from OPENAI_PRIMARY_MODEL / OPENAI_FALLBACK_MODEL, else the defaults below; setup-models.mjs checks them against your key's model list before registering. The fallback is a separate provider entry pointing at the same OpenAI endpoint, so breaking the primary's key for Task C leaves it working.",
+  "trueforgeUrl": "http://localhost:8790",
+  "defaults": { "OPENAI_PRIMARY_MODEL": "gpt-6.1-sol", "OPENAI_FALLBACK_MODEL": "gpt-6-luna" },
+  "providers": [
+    {
+      "type": "openai",
+      "apiKeyEnv": "OPENAI_API_KEY",
+      "models": [{ "name": "auto", "model_id": "$OPENAI_PRIMARY_MODEL", "context_length": 400000, "max_output_tokens": 16000 }]
+    },
+    {
+      "type": "custom",
+      "name": "openai-compat",
+      "base_url": "https://api.openai.com/v1",
+      "apiKeyEnv": "OPENAI_API_KEY",
+      "models": [{ "name": "auto", "model_id": "$OPENAI_FALLBACK_MODEL", "context_length": 400000, "max_output_tokens": 16000 }]
+    }
+  ],
+  "anvilModels": "auto"
+}

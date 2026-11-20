@@ -79,7 +79,7 @@ On activation Anvil starts its MCP server on `127.0.0.1:7801`, registers it in T
 
 ## Model configuration
 
-`config/models.example.json` shows OpenAI, Gemini, Groq (OpenAI-compatible) and Ollama (local). Anvil itself only knows model names like `openai/gpt-4-1-mini`; keys live in TrueForge. Any model TrueForge can call works, and no code path depends on a specific provider.
+Two ready profiles, picked automatically from the key you export: **Anthropic** (`config/models.example.json`: Sonnet 5.5 primary, Haiku 5.5 fallback) and **OpenAI** (`config/models.openai.example.json`; set `OPENAI_PRIMARY_MODEL` / `OPENAI_FALLBACK_MODEL` to pick models). `setup-models.mjs` checks the chosen models against your key before registering them. `config/models.alternatives.example.json` shows Gemini, Groq and Ollama (local). Anvil itself only knows model names like `openai/gpt-4-1-mini`; keys live in TrueForge. Any model TrueForge can call works, and no code path depends on a specific provider.
 
 ## Development
 
