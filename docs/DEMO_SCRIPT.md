@@ -8,7 +8,8 @@ Layout: VS Code left 70% (editor + Anvil panel on the right side bar), integrate
 |---|---|---|
 | 0:00-0:08 | Title card: "Anvil: a coding agent on TrueForge". Status bar shows `Anvil · <primary> (+1 fallback)`. | |
 | **Task A** | | |
-| 0:08-0:20 | Open `src/flask/helpers.py`, select `get_debug_flag`, press Ctrl+Alt+I, paste the exact instruction. | A. Inline edit |
+| 0:08-0:16 | Open `src/flask/helpers.py`, select `get_debug_flag`, Ctrl+Alt+I, type any instruction, and press **Esc** while the diff is filling. Diff closes, file untouched. | Cancellation (A3) |
+| 0:16-0:24 | Select `get_debug_flag` again, Ctrl+Alt+I, paste the exact Task A instruction. | A. Inline edit |
 | 0:20-0:35 | Diff editor opens and fills as tokens stream (do not cut). Hover the CodeLens. | Streaming from TrueForge |
 | 0:35-0:45 | Reject one hunk (e.g. a cosmetic one), accept the others. Notification "applied 2 of 3 hunks · Undo". | Per-hunk accept / reject |
 | 0:45-0:55 | Terminal: `FLASK_DEBUG=off .venv/bin/python -c "..."` prints `False`. | Verified |
@@ -27,6 +28,6 @@ Layout: VS Code left 70% (editor + Anvil panel on the right side bar), integrate
 | 3:42-3:55 | Reject all hunks. Terminal: `git status` shows nothing. | Workspace unchanged |
 | 3:55-4:00 | End card: repo URL. | |
 
-Optional if time allows (otherwise mention in write-up): press Stop mid-Task-B and show "Rolled back N file writes"; `git status` clean.
+Optional extra if time allows: press Stop mid-Task-B and show "Rolled back N file writes"; `git status` clean.
 
 Before recording: reset Flask (`git checkout -- . && git clean -fd -e .venv`), close unrelated tabs, hide personal info from the window title and terminal prompt, set Do Not Disturb, run the whole sequence once untimed.

@@ -1,0 +1,270 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Anvil - TrueForge Forge-a-thon write-up</title>
+<style>
+  @page { size: A4; margin: 13mm 16mm 12mm 16mm; }
+  body { font-family: 'Liberation Sans', Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.32;
+         color: #111; margin: 0; }
+  .ph { background: #fff3a8; }
+
+  table.head { width: 100%; border-collapse: collapse; font-size: 9.8pt; margin-bottom: 10px; }
+  table.head td { border: 1px solid #999; padding: 4px 7px; }
+  table.head td.k { background: #eee; font-weight: bold; width: 15%; }
+
+  h1 { font-size: 14pt; margin: 2px 0 2px 0; }
+  h2 { font-size: 11pt; margin: 11px 0 3px 0; border-bottom: 1px solid #bbb; padding-bottom: 1px; break-after: avoid; }
+  p { margin: 0 0 5px 0; text-align: justify; }
+  ul { margin: 2px 0 5px 0; padding-left: 18px; }
+  li { margin-bottom: 2px; text-align: justify; }
+  code { font-family: 'DejaVu Sans Mono', monospace; font-size: 8.6pt; background: #f2f2f2; padding: 0 2px; }
+
+  table.t { width: 100%; border-collapse: collapse; font-size: 9.2pt; margin: 4px 0 7px 0; }
+  table.t th { text-align: left; background: #eee; border: 1px solid #bbb; padding: 2px 6px; }
+  table.t td { border: 1px solid #ccc; padding: 2px 6px; vertical-align: top; }
+  table.t td code { white-space: nowrap; }
+
+  .fig { margin: 8px auto 2px auto; break-inside: avoid; width: 96%; }
+  .cap { font-size: 9pt; color: #333; margin: 2px 0 8px 0; text-align: justify; }
+  a { color: #1a4fa0; text-decoration: none; }
+  svg text { font-family: 'Liberation Sans', Arial, sans-serif; }
+</style>
+</head>
+<body>
+
+<table class="head">
+  <tr><td class="k">Team Name</td><td>teamMeowMan()</td><td class="k">Team ID</td><td><span class="ph">TEAM ID</span></td></tr>
+  <tr><td class="k">Team Leader</td><td>Gagan Deep</td><td class="k">Members</td><td>Malika Farah, Shaunak Choudhury</td></tr>
+  <tr><td class="k">Links</td><td colspan="3">Repo: <a href="https://github.com/0xteamCookie/forge-a-thon-teammeowman">github.com/0xteamCookie/forge-a-thon-teammeowman</a> &nbsp;·&nbsp; Video: <span class="ph">VIDEO LINK</span></td></tr>
+</table>
+
+<h1>Anvil: a VS Code coding agent whose loop runs on TrueForge</h1>
+
+<h2>1. Team</h2>
+<p>B.Tech computer science students at VIT-AP.</p>
+<ul>
+  <li><b>Gagan Deep</b> (leader, GitHub <a href="https://github.com/gaghackz">gaghackz</a>). Backend Developer Intern at Penzo Technologies (Graho); Technical Co-Lead, Entrepreneurship Club, VIT-AP. Finalist, Upskill India Challenge (Techfest, IIT Bombay).</li>
+  <li><b>Malika Farah</b> (GitHub <span class="ph">handle</span>). CGPA 9.40; built CyberSentinel (Isolation Forest fraud detection with a hash-chained ledger) and FairLens (bias-audit metrics).</li>
+  <li><b>Shaunak Choudhury</b> (GitHub <a href="https://github.com/shaunakc11">shaunakc11</a>). Support Engineer at Vapi; previously Software Engineer at Coyax. Built Lunetra, AI tools for customer-support teams.</li>
+</ul>
+
+<h2>2. Starting point</h2>
+<p><b>From scratch.</b> No upstream fork. We read Continue, Cline, Roo Code and opencode first. Roo Code was archived in
+May 2026 and opencode is a terminal app. In Continue and Cline the diff view and the task loop are tied into their own model
+layer, telemetry and webview protocol, so a fork would mostly have meant deleting code. We wanted a small codebase in which
+every part is about what this track scores: what the model sees, and a safe editor. For the diff we reuse VS Code's own diff
+editor rather than writing a renderer. Runtime dependencies: <code>@truefoundry/trueforge-sdk</code>,
+<code>@modelcontextprotocol/sdk</code>, <code>diff</code>.</p>
+
+<h2>3. Architecture on TrueForge</h2>
+<div class="fig">
+<svg viewBox="0 0 760 262" width="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b26a00"/></marker>
+  </defs>
+  <!-- VS Code extension container -->
+  <rect x="8" y="14" width="330" height="236" rx="8" fill="#f7f7f7" stroke="#888" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="22" y="34" font-size="13" font-weight="bold">VS Code extension (Anvil)</text>
+  <text x="324" y="34" font-size="9.5" fill="#555" text-anchor="end">no model-provider code</text>
+  <g font-size="11" text-anchor="middle">
+    <rect x="22" y="46" width="146" height="50" rx="5" fill="#fff" stroke="#333" stroke-width="1.2"/>
+    <text x="95" y="66" font-weight="bold">Agent panel</text><text x="95" y="82" font-size="9.5" fill="#555">streamed events, context card</text>
+    <rect x="178" y="46" width="146" height="50" rx="5" fill="#fff" stroke="#333" stroke-width="1.2"/>
+    <text x="251" y="66" font-weight="bold">Inline edit</text><text x="251" y="82" font-size="9.5" fill="#555">Ctrl+Alt+I, tool-free agent</text>
+    <rect x="22" y="106" width="146" height="50" rx="5" fill="#fdecc8" stroke="#b26a00" stroke-width="1.6"/>
+    <text x="95" y="126" font-weight="bold">Context engine</text><text x="95" y="142" font-size="9.5" fill="#6b4300">index, rank, token budget</text>
+    <rect x="178" y="106" width="146" height="50" rx="5" fill="#fdecc8" stroke="#b26a00" stroke-width="1.6"/>
+    <text x="251" y="126" font-weight="bold">Review manager</text><text x="251" y="142" font-size="9.5" fill="#6b4300">per-hunk diff, atomic write, undo</text>
+    <rect x="22" y="170" width="302" height="66" rx="5" fill="#fff" stroke="#333" stroke-width="1.2"/>
+    <text x="173" y="190" font-weight="bold">MCP server "anvil-editor" on 127.0.0.1 (bearer token)</text>
+    <text x="173" y="206" font-size="9" fill="#555">read only: retrieve_context, read_file, search_code,</text>
+    <text x="173" y="217" font-size="9" fill="#555">find_symbol, list_files</text>
+    <text x="173" y="229" font-size="9" fill="#b3261e">needs approval: edit_file, write_file, run_command</text>
+  </g>
+  <!-- TrueForge container -->
+  <rect x="420" y="14" width="200" height="236" rx="8" fill="#f7f7f7" stroke="#888" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="434" y="34" font-size="13" font-weight="bold">TrueForge (local, npx)</text>
+  <g font-size="11" text-anchor="middle">
+    <rect x="434" y="46" width="172" height="50" rx="5" fill="#fff" stroke="#333" stroke-width="1.2"/>
+    <text x="520" y="66" font-weight="bold">Sessions, turns, SSE</text><text x="520" y="82" font-size="9.5" fill="#555">agent loop, approvals</text>
+    <rect x="434" y="106" width="172" height="62" rx="5" fill="#fff" stroke="#333" stroke-width="1.2"/>
+    <text x="520" y="126" font-weight="bold">Context engineering</text>
+    <text x="520" y="142" font-size="9.5" fill="#555">deferred tool loading,</text>
+    <text x="520" y="155" font-size="9.5" fill="#555">subagents, compaction</text>
+    <rect x="434" y="178" width="172" height="58" rx="5" fill="#fff" stroke="#333" stroke-width="1.2"/>
+    <text x="520" y="198" font-weight="bold">Agent definitions</text>
+    <text x="520" y="213" font-size="9.5" fill="#555">anvil-coder, anvil-inline</text>
+    <text x="520" y="226" font-size="9.5" fill="#555">one per configured model</text>
+  </g>
+  <!-- arrows extension <-> TrueForge -->
+  <line x1="338" y1="62" x2="432" y2="62" stroke="#333" stroke-width="1.2" marker-end="url(#a)"/>
+  <text x="385" y="56" font-size="9" fill="#555" text-anchor="middle">SDK: turns</text>
+  <line x1="432" y1="84" x2="340" y2="84" stroke="#333" stroke-width="1.2" marker-end="url(#a)"/>
+  <text x="385" y="98" font-size="9" fill="#555" text-anchor="middle">event stream</text>
+  <line x1="432" y1="203" x2="326" y2="203" stroke="#b26a00" stroke-width="1.4" marker-end="url(#ag)"/>
+  <text x="380" y="196" font-size="9" fill="#6b4300" text-anchor="middle">MCP tool calls</text>
+  <!-- models -->
+  <g font-size="11" text-anchor="middle">
+    <line x1="620" y1="120" x2="650" y2="70" stroke="#333" stroke-width="1.2" marker-end="url(#a)"/>
+    <line x1="620" y1="140" x2="650" y2="186" stroke="#333" stroke-width="1.2" marker-end="url(#a)"/>
+    <rect x="652" y="40" width="102" height="58" rx="6" fill="#e8f3e8" stroke="#2e7d32" stroke-width="1.5"/>
+    <text x="703" y="60" font-weight="bold">Primary</text><text x="703" y="75" font-size="9" fill="#333">Sonnet 5.5</text><text x="703" y="88" font-size="9" fill="#555">anthropic provider</text>
+    <rect x="652" y="158" width="102" height="58" rx="6" fill="#fff4e0" stroke="#b26a00" stroke-width="1.5"/>
+    <text x="703" y="178" font-weight="bold">Fallback</text><text x="703" y="193" font-size="9" fill="#333">Haiku 5.5</text><text x="703" y="206" font-size="9" fill="#555">OpenAI-compatible</text>
+    <text x="703" y="240" font-size="9" fill="#555">any catalog provider or</text><text x="703" y="252" font-size="9" fill="#555">OpenAI-compatible endpoint</text>
+  </g>
+</svg>
+</div>
+<div class="cap"><b>Figure 1.</b> The extension is a TrueForge client. It opens sessions and sends turns through the SDK and
+renders the streamed events. Everything the agent can do in the editor is an MCP tool, so the agent, not the extension, decides
+what to read and change.</div>
+
+<ul>
+  <li><b>Approval drives the review.</b> The agent definition sets <code>require_approval_for_tools</code> on the three write tools.
+  When TrueForge pauses on one, Anvil applies the proposed edit in memory and opens it in the diff editor with Accept / Reject on
+  every hunk (Fig. 3). Nothing touches disk until each hunk is decided; the decided text is then written in one
+  <code>WorkspaceEdit</code> and can be undone. A write that reaches the MCP server without a matching review is refused, so a
+  wrong approval policy still cannot write silently.</li>
+  <li><b>Harness features.</b> <i>Deferred tool loading:</i> five tools are preloaded; <code>run_command</code>,
+  <code>find_symbol</code> and <code>list_files</code> load on demand, visible in the session as <code>list_tools</code> /
+  <code>call_tool</code>. <i>Subagents</i> are enabled for discovery in large repos. <i>Compaction</i> triggers at 60k input tokens.</li>
+  <li><b>Streaming and cancel.</b> Tokens render as <code>model.message.delta</code> events arrive; the editor never waits on the
+  model. Esc or Stop calls <code>sessions.cancel</code>, kills running commands, discards open reviews and rolls back anything the
+  run wrote, so a cancelled run leaves the workspace as it was.</li>
+</ul>
+
+<h2>4. How context is selected</h2>
+<p>Explicit first, then retrieved, always under a budget: 10,000 tokens for agent mode, 2,500 for inline edits. On startup
+Anvil indexes the workspace (Flask: 214 files, 1,554 chunks, 985 symbols in about 0.3 s) into function, class, method and doc-section
+chunks, a symbol table and a Python import graph, refreshed when files change.</p>
+<ul>
+  <li><b>Mentions.</b> <code>@file:</code> and <code>@sym:</code> (with autocomplete) go in first, whole file or defining chunk.</li>
+  <li><b>Ranking.</b> BM25 over chunks, plus path matches, exact code identifiers from the request, and <i>analogues</i>: for "add a
+  new X", files that already define several X's (<code>cli.py</code> defines <code>routes_command</code>, <code>shell_command</code>...).</li>
+  <li><b>Companions.</b> If the request asks for a test or docs, the test file and doc page of the top source file are pulled in.</li>
+  <li><b>Packing.</b> Breadth first: every selected file gets its single best view before any file gets a second chunk, so a
+  companion is never starved by one large file. Leftover budget buys more chunks, then signature outlines.</li>
+</ul>
+<div class="fig" style="width:92%">
+<svg viewBox="0 0 760 222" width="100%" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="12" font-size="11" font-weight="bold">Task B context pack: 8 files, 8,238 of 10,000 tokens, chosen in 21 ms before the first model call</text>
+  <g font-size="10">
+    <!-- scale: 2036 tokens = 260px -->
+    <text x="150" y="38" text-anchor="end" font-weight="bold">src/flask/cli.py</text>
+    <rect x="158" y="28" width="224" height="13" fill="#2e7d32"/><text x="388" y="38">1,754</text>
+    <text x="430" y="38" fill="#555">existing commands live here; path and text match "cli", "command"</text>
+    <text x="150" y="60" text-anchor="end" font-weight="bold">tests/test_cli.py</text>
+    <rect x="158" y="50" width="120" height="13" fill="#2e7d32"/><text x="284" y="60">939</text>
+    <text x="430" y="60" fill="#555">test counterpart of cli.py; request asks for a test</text>
+    <text x="150" y="82" text-anchor="end" font-weight="bold">docs/cli.rst</text>
+    <rect x="158" y="72" width="94" height="13" fill="#2e7d32"/><text x="258" y="82">735</text>
+    <text x="430" y="82" fill="#555">doc page named after cli.py; request asks for docs</text>
+    <text x="150" y="104" text-anchor="end">src/flask/config.py</text>
+    <rect x="158" y="94" width="260" height="13" fill="#bbb"/><text x="424" y="104">2,036</text>
+    <text x="470" y="104" fill="#555">"config" in request; defines Config</text>
+    <text x="150" y="126" text-anchor="end">tests/test_config.py</text>
+    <rect x="158" y="116" width="34" height="13" fill="#bbb"/><text x="198" y="126">270</text>
+    <text x="150" y="148" text-anchor="end">docs/config.rst</text>
+    <rect x="158" y="138" width="33" height="13" fill="#bbb"/><text x="197" y="148">259</text>
+    <text x="150" y="170" text-anchor="end">src/flask/testing.py</text>
+    <rect x="158" y="160" width="84" height="13" fill="#bbb"/><text x="248" y="170">654</text>
+    <text x="150" y="192" text-anchor="end">tests/test_basic.py</text>
+    <rect x="158" y="182" width="203" height="13" fill="#bbb"/><text x="367" y="192">1,591</text>
+  </g>
+  <rect x="430" y="132" width="320" height="56" rx="5" fill="#e8f3e8" stroke="#2e7d32" stroke-width="1.2"/>
+  <text x="440" y="150" font-size="10" font-weight="bold" fill="#1b5e20">The top three are exactly the files the task needs</text>
+  <text x="440" y="165" font-size="9.5" fill="#333">Regression-tested. The agent then edited these three</text>
+  <text x="440" y="179" font-size="9.5" fill="#333">(plus CHANGES.rst) without being told any file name.</text>
+  <text x="0" y="214" font-size="9" fill="#777">Bars are tokens in the pack (chunks plus signature outline). Every row carries its reasons; the panel shows them during the run.</text>
+</svg>
+</div>
+<div class="cap"><b>Figure 2.</b> What retrieval chose for Task B on Flask 3.1.3, from the actual run. Green rows are the
+files that had to change.</div>
+<p><b>Trade-off.</b> Lexical and structural retrieval, not embeddings: deterministic, instant, needs no extra model or service, and
+it can explain every pick. Its weakness is vocabulary mismatch, which the agent covers with <code>search_code</code> and
+<code>find_symbol</code>.</p>
+
+<div class="fig" style="width:94%">
+<svg viewBox="0 0 760 236" width="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker>
+    <marker id="bg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2e7d32"/></marker>
+  </defs>
+  <g font-size="11" font-weight="bold" text-anchor="middle">
+    <rect x="30" y="4" width="100" height="24" rx="4" fill="#eee" stroke="#333"/><text x="80" y="20">You</text>
+    <rect x="230" y="4" width="120" height="24" rx="4" fill="#fdecc8" stroke="#b26a00"/><text x="290" y="20">Anvil</text>
+    <rect x="450" y="4" width="120" height="24" rx="4" fill="#eee" stroke="#333"/><text x="510" y="20">TrueForge</text>
+    <rect x="640" y="4" width="110" height="24" rx="4" fill="#eee" stroke="#333"/><text x="695" y="20">MCP tools</text>
+  </g>
+  <g stroke="#bbb" stroke-dasharray="3 3"><line x1="80" y1="28" x2="80" y2="230"/><line x1="290" y1="28" x2="290" y2="230"/><line x1="510" y1="28" x2="510" y2="230"/><line x1="695" y1="28" x2="695" y2="230"/></g>
+  <g font-size="9.5" stroke-width="1.2">
+    <line x1="290" y1="46" x2="508" y2="46" stroke="#333" marker-end="url(#b)"/><text x="400" y="41" text-anchor="middle">turn: request + context pack</text>
+    <line x1="510" y1="66" x2="693" y2="66" stroke="#333" marker-end="url(#b)"/><text x="602" y="61" text-anchor="middle">read_file, search_code (run freely)</text>
+    <line x1="508" y1="88" x2="292" y2="88" stroke="#333" marker-end="url(#b)"/><text x="400" y="83" text-anchor="middle">tool.approval_required: edit_file cli.py</text>
+    <rect x="300" y="96" width="180" height="22" rx="4" fill="#fdecc8" stroke="#b26a00"/>
+    <text x="390" y="111" text-anchor="middle">apply in memory, open diff editor</text>
+    <line x1="288" y1="134" x2="82" y2="134" stroke="#333" marker-end="url(#b)"/><text x="160" y="129" text-anchor="middle">3 hunks, Accept / Reject each</text>
+    <line x1="82" y1="152" x2="288" y2="152" stroke="#333" marker-end="url(#b)"/><text x="160" y="147" text-anchor="middle">accept 2, reject 1</text>
+    <line x1="290" y1="166" x2="508" y2="166" stroke="#2e7d32" marker-end="url(#bg)"/><text x="400" y="161" text-anchor="middle" fill="#1b5e20">user.tool_approval: allow (deny if all rejected)</text>
+    <line x1="510" y1="186" x2="693" y2="186" stroke="#333" marker-end="url(#b)"/><text x="602" y="181" text-anchor="middle">edit_file runs</text>
+    <rect x="560" y="194" width="194" height="34" rx="4" fill="#e8f3e8" stroke="#2e7d32"/>
+    <text x="657" y="208" text-anchor="middle">writes the 2 accepted hunks, atomically;</text>
+    <text x="657" y="221" text-anchor="middle">tells the agent which hunk was rejected</text>
+  </g>
+</svg>
+</div>
+<div class="cap"><b>Figure 3.</b> TrueForge's approval pause becomes the per-hunk review. The approved call is matched to its review
+by a canonical hash of its arguments, since TrueForge does not pass session or call IDs to MCP servers.</div>
+
+<h2>5. Model setup</h2>
+<table class="t">
+  <tr><th>Role</th><th style="width:36%">TrueForge model</th><th>Where it runs</th><th>Used for</th></tr>
+  <tr><td>Primary</td><td><code>anthropic/claude-sonnet-5-5</code></td><td>Anthropic API, TrueForge <code>anthropic</code> catalog provider</td><td>Tasks A and B</td></tr>
+  <tr><td>Fallback</td><td><code>anthropic-compat/claude-haiku-5-5</code></td><td>Anthropic's OpenAI-compatible endpoint, a separate <code>custom</code> provider</td><td>Task C</td></tr>
+  <tr><td>Development</td><td><code>mock/mock-coder</code></td><td>Scripted OpenAI-compatible server on localhost</td><td>All automated tests, free</td></tr>
+</table>
+<p>The fallback is a separate provider entry, so invalidating the primary's key (Task C) does not take it down too. <b>Cost.</b>
+Task A takes about 3 s; Task B about 50 s and about 329k input tokens (mostly cache reads) plus 6.4k output, under $0.75 even at
+uncached prices. Total spend for development, rehearsals and recording: <span class="ph">under $5</span>. <b>Switching models:</b>
+the ordered <code>anvil.models</code> setting or <i>Anvil: Select Model Order</i>; keys live only in TrueForge. Nothing in the
+extension is provider-specific, and inline edit uses a tool-free agent with a plain fenced reply, so it works on models with
+weak tool calling. <b>Resilience:</b> a failed turn that produced nothing is retried with exponential backoff, then re-run on the
+next model in a fresh session, with no user action. A run that already wrote files is never replayed automatically.</p>
+
+<h2>6. Scorecard</h2>
+<table class="t">
+  <tr><th style="width:24%">Criterion</th><th style="width:9%">Video</th><th>Claim</th></tr>
+  <tr><td>A1 Inline edit</td><td><span class="ph">0:00</span></td><td>Diff rendered in the editor with Accept / Reject on every hunk</td></tr>
+  <tr><td>A2 Agent mode</td><td><span class="ph">0:00</span></td><td>Finds and edits <code>cli.py</code>, <code>test_cli.py</code>, <code>docs/cli.rst</code> without being told; pytest passes</td></tr>
+  <tr><td>A3 Streaming and cancellation</td><td><span class="ph">0:00</span></td><td>Diff fills as tokens stream; Esc stops in TrueForge, workspace unchanged</td></tr>
+  <tr><td>B1 Context assembly</td><td><span class="ph">0:00</span></td><td>Panel shows each chosen file, why, and tokens against a 10k budget</td></tr>
+  <tr><td>B2 Diff safety</td><td><span class="ph">0:00</span></td><td>Nothing written until each hunk is decided; Undo of an applied change shown</td></tr>
+  <tr><td>B3 Resilience</td><td><span class="ph">0:00</span></td><td>Invalid key: retry, then automatic fallback to the second model; <code>git status</code> clean</td></tr>
+  <tr><td>B4 TrueForge integration</td><td><span class="ph">0:00</span></td><td>Editor tools as MCP; approval drives review; deferred tool loading visible in the session</td></tr>
+</table>
+
+<h2>7. Tools used</h2>
+<p>Claude Code.</p>
+
+<h2>8. Known limitations</h2>
+<p><b>Verified on the real model:</b> Task A changes code and docstring in 2 hunks; Task B, run twice, changed <code>cli.py</code>,
+<code>tests/test_cli.py</code>, <code>docs/cli.rst</code> and <code>CHANGES.rst</code> each time, taking <code>tests/test_cli.py</code>
+from 58 to 61 and 60 passing; Task C fell back to Haiku in about 5 s with <code>git status</code> clean. Automated: 15 unit tests, a
+live TrueForge loop test, and 8 tests inside a real VS Code instance. <b>Limits:</b></p>
+<ul>
+  <li>Retrieval is lexical and structural, so matches that share no words rely on the agent's own searching.</li>
+  <li>Symbols come from regular expressions (Python, JS/TS), not a language server.</li>
+  <li>Once a run has written files, a model failure stops the run instead of switching models mid-way.</li>
+  <li>Whole hunks only: no accepting half of a hunk.</li>
+</ul>
+<p><b>With another month:</b> language-server symbols and references; an embedding re-ranker behind the lexical stage; handing the
+transcript to the fallback model mid-run; and a TrueForge pull request adding fallback model chains to agent specs.</p>
+
+</body>
+</html>
