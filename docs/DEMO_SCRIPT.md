@@ -11,7 +11,7 @@ Layout: VS Code left 70% (editor + Anvil panel on the right side bar), integrate
 | 0:08-0:16 | Open `src/flask/helpers.py`, select `get_debug_flag`, Ctrl+Alt+I, type any instruction, and press **Esc** while the diff is filling. Diff closes, file untouched. | Cancellation (A3) |
 | 0:16-0:24 | Select `get_debug_flag` again, Ctrl+Alt+I, paste the exact Task A instruction. | A. Inline edit |
 | 0:20-0:35 | Diff editor opens and fills as tokens stream (do not cut). Hover the CodeLens. | Streaming from TrueForge |
-| 0:35-0:45 | Reject one hunk (e.g. a cosmetic one), accept the others. Notification "applied 2 of 3 hunks · Undo". | Per-hunk accept / reject |
+| 0:35-0:45 | Click **Accept** on each hunk one at a time (docstring, then code), not "Accept all". Notification "applied 2 of 2 hunks · Undo". | Per-hunk accept / reject |
 | 0:45-0:55 | Terminal: `FLASK_DEBUG=off .venv/bin/python -c "..."` prints `False`. | Verified |
 | 0:55-1:02 | Click Undo, show file reverted, Ctrl+Shift+Z or re-run accept (or just show undo then redo via command). | Undo of an applied change |
 | **Task B** | | |
@@ -23,7 +23,7 @@ Layout: VS Code left 70% (editor + Anvil panel on the right side bar), integrate
 | 2:45-3:00 | Terminal: `pytest tests/test_cli.py -q` passed; `flask --help` lists `config`; `flask --app flaskr config` shows `"SECRET_KEY": "***"`; `git diff --stat` shows 3 files. | Verified |
 | 3:00-3:12 | Click "Session": TrueForge UI shows the turns, MCP tool calls, deferred tool loading, subagent if used. | TrueForge session |
 | **Task C** | | |
-| 3:12-3:20 | Terminal: `node scripts/setup-models.mjs --break openai` (shows "BROKE openai"). `git checkout -- .` to reset. | C. Resilience |
+| 3:12-3:20 | Terminal: `node ../anvil/scripts/setup-models.mjs --break anthropic` (shows "BROKE anthropic"). `git checkout -- .` to reset. | C. Resilience |
 | 3:20-3:42 | Repeat Task A. Status bar: "failed (401) retrying in 1s", then "Falling back to <model2>". Click around the editor during this to show it's responsive. Diff arrives. | Automatic fallback, editor responsive |
 | 3:42-3:55 | Reject all hunks. Terminal: `git status` shows nothing. | Workspace unchanged |
 | 3:55-4:00 | End card: repo URL. | |
