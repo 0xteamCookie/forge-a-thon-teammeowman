@@ -8,9 +8,9 @@ Team **teamMeowMan()**
 
 | Member | Role | College / employer | GitHub |
 |---|---|---|---|
-| Gagan Deep | Leader | TODO | TODO |
-| Malika Farah | Member | TODO | TODO |
-| Shaunak Choudhury | Member | TODO | [shaunakc11](https://github.com/shaunakc11) |
+| Gagan Deep | Leader | VIT-AP | [gaghackz](https://github.com/gaghackz) |
+| Shaunak Choudhury | Member | VIT-AP | [shaunakc11](https://github.com/shaunakc11) |
+| Malika Farah | Member | VIT-AP | [malikafarah](https://github.com/malikafarah) |
 
 ## 2. Starting point
 
