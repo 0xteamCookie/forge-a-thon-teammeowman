@@ -12,6 +12,16 @@ A coding agent for VS Code whose agent loop runs on [TrueForge](https://github.c
 
 Team: Gagan Deep (leader), Shaunak Choudhury, Malika Farah.
 
+## Build log
+
+The code was written locally from 12 Nov and first committed on 20 Nov, so the commit history starts on the 20th.
+
+- **12 Nov.** Read the problem statement and TrueForge's source. Found two setup traps (TrueForge blocks loopback by default; local mode listens on IPv6 only). Built the extension: context engine, MCP server, per-hunk review, TrueForge client with retry and fallback, inline edit, agent panel. Built a scripted mock model so the whole loop could be tested without credits. 15 unit tests, a live TrueForge loop test and 8 tests inside a real VS Code instance passing.
+- **20 Nov.** Ran Tasks A, B (twice) and C on a real model (Sonnet 5.5, Haiku 5.5 fallback): all passed. Wrote the write-up. Made the setup work on teammates' machines: OpenAI as an alternative provider, a key-holding team proxy, a prebuilt VSIX, Windows notes.
+- **21 Nov.** Demo video recorded on Windows through the team proxy. Scorecard filled from the video.
+
+Bugs found by testing and fixed along the way: the MCP server hanging on shutdown (TrueForge keeps a keep-alive connection open); inline edit staying "busy" until a notification was dismissed; the model picker misreading TrueForge's model list; a misleading "all hunks rejected" message when the model returned the selection unchanged.
+
 Anvil reads a real repository, decides what the model should see, plans a change across several files, and shows every hunk for review before anything touches disk. If the model behind it fails, it retries and then falls back to the next configured model on its own.
 
 ## Starting point
