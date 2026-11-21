@@ -1,6 +1,6 @@
 # Anvil: write-up (draft)
 
-> Export to PDF, 1-3 pages. Headings must stay in this order. Replace every TODO before submitting.
+> Markdown copy of the submitted write-up. The PDF is [writeup.pdf](writeup.pdf).
 
 ## 1. Team
 
@@ -45,7 +45,7 @@ Trade-off: lexical plus structural retrieval, not embeddings. It is deterministi
 | Fallback | `anthropic-compat/claude-haiku-5-5` | Anthropic's OpenAI-compatible endpoint, registered as a separate `custom` provider | Task C (after the primary key is made invalid) |
 | Development | `mock/mock-coder` | `scripts/mock-llm.mjs`, a scripted OpenAI-compatible server on localhost | All automated tests; costs nothing |
 
-The fallback deliberately goes through a different provider entry so that breaking the primary's key (Task C) does not take the fallback down with it. Measured on our runs: Task A about 3s and Task B about 50s on Sonnet 5.5; Task B used about 329k input tokens (mostly prompt-cache reads) and 6.4k output tokens, under $0.75 even at uncached prices. Total model spend for development, rehearsals and recording: TODO (expected under $5).
+The fallback deliberately goes through a different provider entry so that breaking the primary's key (Task C) does not take the fallback down with it. Measured on our runs: Task A about 3s and Task B about 50s on Sonnet 5.5; Task B used about 329k input tokens (mostly prompt-cache reads) and 6.4k output tokens, under $0.75 even at uncached prices. Total model spend for development, rehearsals and recording: under $5.
 
 Switching models: `anvil.models` (ordered list of TrueForge model names) or **Anvil: Select Model Order**. Keys live only in TrueForge (`scripts/setup-models.mjs` reads them from env vars). Any catalog provider or OpenAI-compatible endpoint works; nothing in the extension is provider-specific. Inline edit uses a tool-free agent and a plain fenced-reply format, so it works on models with weak or no tool calling.
 
