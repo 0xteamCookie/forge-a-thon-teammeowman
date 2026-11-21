@@ -6,7 +6,7 @@ A coding agent for VS Code whose agent loop runs on [TrueForge](https://github.c
 
 | Artefact | Link |
 |---|---|
-| Demo video (Tasks A, B, C) | **VIDEO LINK** |
+| Demo video (Tasks A, B, C) | [youtu.be/Kvxol8ji1ek](https://youtu.be/Kvxol8ji1ek) (3:17) |
 | Write-up (PDF, 3 pages) | [docs/writeup.pdf](docs/writeup.pdf) |
 | Code | This repository |
 

@@ -36,7 +36,7 @@
 <table class="head">
   <tr><td class="k">Team Name</td><td>teamMeowMan()</td><td class="k">Team ID</td><td>TM-19DE4C2ACA5</td></tr>
   <tr><td class="k">Team Leader</td><td>Gagan Deep</td><td class="k">Members</td><td>Shaunak Choudhury, Malika Farah</td></tr>
-  <tr><td class="k">Links</td><td colspan="3">Repo: <a href="https://github.com/0xteamCookie/forge-a-thon-teammeowman">github.com/0xteamCookie/forge-a-thon-teammeowman</a> &nbsp;·&nbsp; Video: <span class="ph">VIDEO LINK</span></td></tr>
+  <tr><td class="k">Links</td><td colspan="3">Repo: <a href="https://github.com/0xteamCookie/forge-a-thon-teammeowman">github.com/0xteamCookie/forge-a-thon-teammeowman</a> &nbsp;·&nbsp; Video: <a href="https://youtu.be/Kvxol8ji1ek">youtu.be/Kvxol8ji1ek</a> (3:17)</td></tr>
 </table>
 
 <h1>Anvil: a VS Code coding agent whose loop runs on TrueForge</h1>
@@ -231,7 +231,7 @@ by a canonical hash of its arguments, since TrueForge does not pass session or c
 </table>
 <p>The fallback is a separate provider entry, so invalidating the primary's key (Task C) does not take it down too. <b>Cost.</b>
 Task A takes about 3 s; Task B about 50 s and about 329k input tokens (mostly cache reads) plus 6.4k output, under $0.75 even at
-uncached prices. Total spend for development, rehearsals and recording: <span class="ph">under $5</span>. <b>Switching models:</b>
+uncached prices. Total spend for development, rehearsals and recording: under $5. <b>Switching models:</b>
 the ordered <code>anvil.models</code> setting or <i>Anvil: Select Model Order</i>; keys live only in TrueForge. Nothing in the
 extension is provider-specific, and inline edit uses a tool-free agent with a plain fenced reply, so it works on models with
 weak tool calling. <b>Resilience:</b> a failed turn that produced nothing is retried with exponential backoff, then re-run on the
@@ -240,13 +240,13 @@ next model in a fresh session, with no user action. A run that already wrote fil
 <h2>6. Scorecard</h2>
 <table class="t">
   <tr><th style="width:24%">Criterion</th><th style="width:9%">Video</th><th>Claim</th></tr>
-  <tr><td>A1 Inline edit</td><td><span class="ph">0:00</span></td><td>Diff rendered in the editor with Accept / Reject on every hunk</td></tr>
-  <tr><td>A2 Agent mode</td><td><span class="ph">0:00</span></td><td>Finds and edits <code>cli.py</code>, <code>test_cli.py</code>, <code>docs/cli.rst</code> without being told; pytest passes</td></tr>
-  <tr><td>A3 Streaming and cancellation</td><td><span class="ph">0:00</span></td><td>Diff fills as tokens stream; Esc stops in TrueForge, workspace unchanged</td></tr>
-  <tr><td>B1 Context assembly</td><td><span class="ph">0:00</span></td><td>Panel shows each chosen file, why, and tokens against a 10k budget</td></tr>
-  <tr><td>B2 Diff safety</td><td><span class="ph">0:00</span></td><td>Nothing written until each hunk is decided; Undo of an applied change shown</td></tr>
-  <tr><td>B3 Resilience</td><td><span class="ph">0:00</span></td><td>Invalid key: retry, then automatic fallback to the second model; <code>git status</code> clean</td></tr>
-  <tr><td>B4 TrueForge integration</td><td><span class="ph">0:00</span></td><td>Editor tools as MCP; approval drives review; deferred tool loading visible in the session</td></tr>
+  <tr><td>A1 Inline edit</td><td>1:00</td><td>Diff streams into the editor (1:08); hunks accepted one by one (1:10-1:14); check prints <code>False</code> (1:18)</td></tr>
+  <tr><td>A2 Agent mode</td><td>1:22</td><td>No files named; agent edits <code>cli.py</code>, <code>test_cli.py</code>, <code>docs/cli.rst</code>, <code>CHANGES.rst</code>; pytest 61 passed (2:00); <code>git diff --stat</code> 4 files (2:06)</td></tr>
+  <tr><td>A3 Streaming and cancellation</td><td>0:44</td><td>Edit starts streaming and is stopped mid-generation (0:56); file left untouched (0:58)</td></tr>
+  <tr><td>B1 Context assembly</td><td>1:25</td><td>Context card: each chosen file, why, and tokens against a 10k budget, before the first model call</td></tr>
+  <tr><td>B2 Diff safety</td><td>1:10, 1:40</td><td>Per-hunk review in the diff editor, one file at a time; nothing written before review. Undo exists (buttons visible in the panel, 1:54) but is <b>not exercised</b> in the video</td></tr>
+  <tr><td>B3 Resilience</td><td>2:20</td><td>Primary key invalidated; retry, then automatic fallback to Haiku (notice 2:35), diff arrives (2:40); <code>git status</code> clean (2:45)</td></tr>
+  <tr><td>B4 TrueForge integration</td><td>1:54, 2:10</td><td>MCP tool call needing approval (run_command, Allow) at 1:54; TrueForge session with the run's agent steps at 2:10</td></tr>
 </table>
 
 <h2>7. Tools used</h2>

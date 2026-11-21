@@ -53,16 +53,17 @@ Switching models: `anvil.models` (ordered list of TrueForge model names) or **An
 
 ## 6. Scorecard
 
+Video: https://youtu.be/Kvxol8ji1ek (3:17)
+
 | Criterion | Video | Claim |
 |---|---|---|
-| A1 Inline edit | TODO | Diff in the editor with accept/reject on each hunk |
-| A2 Agent mode | TODO | Finds and edits `cli.py`, `test_cli.py`, `cli.rst` without being told |
-| A3 Streaming and cancellation | TODO | Tokens stream live; Esc/Stop cancels in TrueForge and leaves the workspace clean |
-| B1 Context assembly | TODO | Panel shows each chosen file, why, and tokens used against a 10k budget |
-| B2 Diff safety | TODO | Nothing written until each hunk is decided; Undo of an applied change shown |
-| B3 Resilience | TODO | Invalid key: retry, then automatic fallback to the second model; `git status` clean |
-| B4 TrueForge integration | TODO | MCP editor tools; approval drives review; deferred tool loading and subagents visible in the session |
-| C1 Video | n/a | A, B, C in order, each verified on screen |
+| A1 Inline edit | 1:00 | Diff streams into the editor (1:08); hunks accepted one by one (1:10-1:14); check prints `False` (1:18) |
+| A2 Agent mode | 1:22 | No files named; agent edits `cli.py`, `test_cli.py`, `docs/cli.rst`, `CHANGES.rst`; pytest 61 passed (2:00); `git diff --stat` 4 files (2:06) |
+| A3 Streaming and cancellation | 0:44 | Edit starts streaming and is stopped mid-generation (0:56); file untouched (0:58) |
+| B1 Context assembly | 1:25 | Context card: each chosen file, why, and tokens against a 10k budget |
+| B2 Diff safety | 1:10, 1:40 | Per-hunk review, one file at a time; nothing written before review. Undo exists but is not exercised in the video |
+| B3 Resilience | 2:20 | Primary key invalidated; retry, then automatic fallback to Haiku (2:35), diff arrives (2:40); `git status` clean (2:45) |
+| B4 TrueForge integration | 1:54, 2:10 | MCP tool call needing approval (run_command, Allow) at 1:54; TrueForge session at 2:10 |
 
 ## 7. Tools used
 
